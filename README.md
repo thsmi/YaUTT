@@ -1,9 +1,6 @@
-# YaUTT
-YaUTT - Yet Another (java script) Unit Test Tool
+# YaUTT - Yet Another (java script) Unit Test Tool
 
-YaUTT - Yet Another Unit Test Tool
-
-Why a new unit test tool?
+## Why yet another unit test tool?
 
 Because non of the existing tools allowed defining unit test configurations which 
 could be inherit other unit test configurations.
@@ -15,11 +12,11 @@ javascript files, like in java every class a own file.
 
 But this makes it a time-consuming task to integrate into any existing test tool.
 
-Getting started?
+## Getting started
 
 There are two basic parts. One it the configuration, the other one are the test files.
 
-Configuration:
+### Configuration:
 
 In order to get started you need to edit configuration in ./tests/test.json. 
 
@@ -49,7 +46,7 @@ just need to update the location in the index.html. But I suggest to put it into
 Example Configuration:
 
 
-Unit Tests:
+### Unit Tests:
   
 Creating a unit test is straight forward. As first step you should nest you tests into an anonymous method.
 This eliminates namespace poisoning.
@@ -109,13 +106,23 @@ suit.add(function() { //teardown code });
 
 You can see an example at github
  
-Runing test?
+## Runing tests
 
 Just open the index.html in your browser and the starts should run. In case a test fails it will
 skip processing.
 
 
+## Bugs
 
+Please report bugs via the [issue tracker](https://github.com/thsmi/YaUTT/issues) 
+or send an email to schmid-thomas at gmx.net . 
 
+Give me 1-2 weeks time for a reply. If you did not receive a reply at all, it 
+might be a good idea to check your spam filter. 
 
-   
+## License
+
+The extension is free and open source software, it is made available to you 
+under the terms of the [GNU Affero General Public License (AGPLv3)](http://www.fsf.org/licensing/licenses/agpl-3.0.html).
+
+Refer to [Licensing information](https://github.com/thsmi/YaUTT/blob/master/LICENSE.md) for details.
