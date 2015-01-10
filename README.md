@@ -49,7 +49,7 @@ This eliminates namespace poisoning.
 
 Then grab a reference to the test suit. It's a injected into the global name space.
 
-```
+```javascript
 "use strict";
   
 (function() {
@@ -58,7 +58,6 @@ Then grab a reference to the test suit. It's a injected into the global name spa
     
   if (!suite)
     throw "Could not initialize test suite";
-    
     
 }())
 ```
@@ -70,7 +69,7 @@ A test will succeed in case the function does not throw an exception. Test are p
 are added. The first one added will be the first one processed. The last one added will always be run as the 
 last test.
 
-```
+```javascript
 suite.add( function() {  	
   suite.log("Example unit tests...")
 }); 
@@ -79,21 +78,21 @@ suite.add( function() {
 Beside the add method, the test suit offers various log methods which support different log levels.
 The loglevel is a string which is passed transparently to the test log.
 
-```
+```javascript
 suite.log("Message with custom log level...","Custom");
 ```
 
 In order to test for equality. Use the assertEquals method. It will compare the two parameters and
 throw an exception in case they expected value is not equal to the actual value. It will do a dump compare.
 
-```
+```javascript
 suite.assertEquals("test1","test2");
 ```
 
 In case your want to abort the test with a failure or you want to skip with as succeeded. You may use
 the success and failed methods. 
 
-```
+```javascript
 // Cause the unit to fail and thus stops processing any other test within the same file.
 // Any subsequent unit tests in other unit test files are still executed.
 suite.fail("Skip unit test");
@@ -106,7 +105,7 @@ suit.succeed();
 Sometimes you need to load addition javascipt files during a test. If so use the require method.
 It will load javascript files. The path is relative to your test.json file.
 
-```
+```javascript
 suite.require("./somedirectory/somescript.js");
 ```
 
@@ -115,7 +114,7 @@ and called at any time. Same applies to tear down.
 
 In this example the startup is called before and the tear down after each unit test.
 
-```
+```javascript
 function startup () { /*startup code*/};
 function teardown () {/*teardown code*/};
 
@@ -131,7 +130,7 @@ suit.add(teardown);
 
 If you want just need one startup at the begin and one treardown at the end use the following pattern:
 
-```
+```javascript
 suit.add(function() { /*startup code*/ });
 
 suit.add(function() { });
