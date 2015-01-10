@@ -1,6 +1,6 @@
 # YaUTT - Yet Another (java script) Unit Test Tool
 
-## Why yet another unit test tool?
+### Why yet another unit test tool?
 
 Because non of the existing tools allowed defining unit test configurations which 
 could be inherit other unit test configurations.
@@ -12,11 +12,11 @@ javascript files, like in java every class a own file.
 
 But this makes it a time-consuming task to integrate into any existing test tool.
 
-## Getting started
+### Getting started
 
 There are two basic parts. One it the configuration, the other one are the test files.
 
-### Configuration:
+#### Configuration
 
 In order to get started you need to edit configuration in ./tests/test.json. 
 
@@ -46,7 +46,7 @@ just need to update the location in the index.html. But I suggest to put it into
 Example Configuration:
 
 
-### Unit Tests:
+#### Unit Tests
   
 Creating a unit test is straight forward. As first step you should nest you tests into an anonymous method.
 This eliminates namespace poisoning.
@@ -106,7 +106,7 @@ suit.add(function() { //teardown code });
 
 You can see an example at github
  
-## Runing tests
+### Runing tests
 
 Just open the index.html in your browser and the starts should run. In case a test fails it will
 skip processing.
