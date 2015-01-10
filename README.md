@@ -1,55 +1,65 @@
-# YaUTT - Yet Another (java script) Unit Test Tool
+# YaUTT - Yet Another Unit Test Tool
 
-### Why yet another unit test tool?
+Why yet another unit test tool? Because non of the existing tools allowes defining unit test configurations which 
+can inherit other unit test configurations.
 
-Because non of the existing tools allowed defining unit test configurations which 
-could be inherit other unit test configurations.
+It's a very basic an simple implementation, so don't expect too much.
 
 If you build a Firefox and Thunderbird Addon you'll notice their directory structures are
-slightly different than it would be for a website. This is because xul overlays make it
-easy to include complex javascript structures. The tendency is to save more and smaller
-javascript files, like in java every class a own file. 
+slightly different than it would be for a website. I suppose this is because of xul overlays and the subscript loader. Both makes it easy to include complex JavaScript structures into existing documents. Thus the tendency is in general to have more and smaller javascript files, like it is done in java every class a own file which leads to a large imports list, which tend to have a specific order.
 
-But this makes it a time-consuming task to integrate into any existing test tool.
+If you create a new unit test you need to ensure these "imports" are loaded in exactly that specific order. Othewise you'll endup with more or less random script erros. Trying to ensure this in existing unit test is a time-consuming and frustrating task.
+
+It's a very basic and simple implementation, which runs directly within a webbrowser. The overhead is low and it is targeted for tiny and small javascript projects.
 
 ### Getting started
 
-There are two basic parts. One it the configuration, the other one are the test files.
+There are two basic parts. One it the configuration, it defines which test needs which script files. The other one are the unit tests.
 
 #### Configuration
 
-In order to get started you need to edit configuration in ./tests/test.json. 
+In order to get started you need to edit configuration in ''./tests/test.json''.  
 
-It's simple json file, which contains all tests. Each test defined by a separate test object.
-Such test objects are identified by a unique name.
+It's simple json file, which declares all tests and their requirements. Each test defined ist by a separate test object. Such a test objects are identified by a unique name, some kind of a test profile.
 
-Each test object may contain the following properties.
- 
-  require
-    An array which points to all js scripts which are required to run this test. 
+Each test profile may contain the following properties.
 
-  extend 
-    The name of a base test object which should be used to extend this test object. 
-    It will inherit all required scripts from the base object. Properties other than
-    require are not inherited.   
+* require<br/>
+    An array which points to all js scripts which are required to run this test profile. 
+
+* extend<br/>
+    The name of a base test profile which should be used to extend this test profile. 
+    It will inherit all required scripts from the base profile. Properties other than
+    "require" are not inherited.   
     
     It's perfectly fine to have multiple levels of inheritance. You may extend a test 
-    object which extends an other test objects. But be carefull not to build inheritance loops.
+    profile which extends an other test profiless. But be carefull not to build inheritance loops.
     
-  script
-    the test script which should be run. Test scripts are very simple they consist of an anyonymous
-    functions which contains all tests in a sequence.
+* script<br/>
+    The test script which should be run. It's equivalent to the a unit test. Suche test scripts are 
+    very simple they consist of an anyonymous functions which contains all tests in a sequence. But
+    you'll read about it in the next chapter.
     
-Links have to be relative to the test.json file. The test.json file can be located anywhere, you 
-just need to update the location in the index.html. But I suggest to put it into the test directory.
- 
-Example Configuration:
-
+Please not all links to scripts have to be relative to the test.json file. The test.json file can be located anywhere, you justt need to update the location in the index.html. But I suggest to put it into the test directory.
 
 #### Unit Tests
   
 Creating a unit test is straight forward. As first step you should nest you tests into an anonymous method.
 This eliminates namespace poisoning.
+
+```
+"use strict";
+  
+(function() {
+
+  var suite  = net.tschmid.yautt.test;
+    
+  if (!suite)
+    throw "Could not initialize test suite";
+    
+    
+}())
+```
 
 The first command within your anonymous function should grab a reference to the test suite.
 The test suit offers a very basic set of methods to register and control tests.
