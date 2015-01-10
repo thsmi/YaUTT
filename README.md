@@ -47,6 +47,8 @@ Please not all links to scripts have to be relative to the test.json file. The t
 Creating a unit test is straight forward. As first step you should nest you tests into an anonymous method.
 This eliminates namespace poisoning.
 
+Then grab a reference to the test suit. It's a injected into the global name space.
+
 ```
 "use strict";
   
@@ -61,40 +63,61 @@ This eliminates namespace poisoning.
 }())
 ```
 
-The first command within your anonymous function should grab a reference to the test suite.
 The test suit offers a very basic set of methods to register and control tests.
 
-To add a test you simply call the test suit's add method and pass a function which should be run.
-A test will pass in case the function does not throw an exception.
+To add a test you simply call the test suite's add method and pass a function which should be run.
+A test will succeed in case the function does not throw an exception. Test are processed in the forder they 
+are added. The first one added will be the first one processed. The last one added will always be run as the 
+last test.
 
-That's all you created you first unit test.
+```
+suite.add( function() {  	
+  suite.log("Example unit tests...")
+}); 
+```
 
 Beside the add method, the test suit offers various log methods which support different log levels.
 The loglevel is a string which is passed transparently to the test log.
 
-In order to test for quality. Use the asserEquals method. It will compare the two parameters and
-throw an exception in case they expected value is not equal to the actual value.
+```
+suite.log("Message with custom log level...","Custom");
+```
+
+In order to test for equality. Use the assertEquals method. It will compare the two parameters and
+throw an exception in case they expected value is not equal to the actual value. It will do a dump compare.
+
+```
+suite.assertEquals("test1","test2");
+```
 
 In case your want to abort the test with a failure or you want to skip with as succeeded. You may use
 the success and failed methods. 
 
+```
+// Cause the unit to fail and thus stops processing any other test within the same file.
+// Any subsequent unit tests in other unit test files are still executed.
+suite.fail("Skip unit test");
+
+// Succeed causes the unit to succeed, any other test within the same file will be skipped. 
+// Any subsequent unit test in other unit test file are till executed.
+suit.succeed();
+``` 
+
 Sometimes you need to load addition javascipt files during a test. If so use the require method.
 It will load javascript files. The path is relative to your test.json file.
 
-In case you need a startup method. Just add a function doing your startup. functions may be reused 
+```
+suite.require("./somedirectory/somescript.js");
+```
+
+In case you need a startup method. Just add a function doing your startup. Functions may be reused 
 and called at any time. Same applies to tear down.
 
-In this example the startup should be called before and the tear down after earc unit test.
-Which results in the following structure.
+In this example the startup is called before and the tear down after each unit test.
 
-function startup () {
-  // add you code 
-};
-
-function teardown () {
-  // add you code 
-};
-
+```
+function startup () { /*startup code*/};
+function teardown () {/*teardown code*/};
 
 suit.add(startup);
 suit.add(function() {});
@@ -104,23 +127,25 @@ suit.add(startup);
 suit.add(function() {});
 suit.add(teardown);
 
+```
 
-If you want just one startup at the begin and one treardown at the end use the following pattern:
+If you want just need one startup at the begin and one treardown at the end use the following pattern:
 
-suit.add(function() { //startup code });
+```
+suit.add(function() { /*startup code*/ });
 
 suit.add(function() { });
 suit.add(function() { });
 
-suit.add(function() { //teardown code });
+suit.add(function() { /*teardown code*/ });
+```
 
-You can see an example at github
+You can see a more complex example at https://github.com/thsmi/sieve/tree/master/tests
  
 ### Runing tests
 
-Just open the index.html in your browser and the starts should run. In case a test fails it will
-skip processing.
-
+Just open the index.html in your browser and the tests should run. In case a test fails it will
+skip process the next unit.
 
 ## Bugs
 
