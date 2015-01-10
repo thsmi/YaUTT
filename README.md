@@ -146,6 +146,8 @@ You can see a more complex example at https://github.com/thsmi/sieve/tree/master
 Just open the index.html in your browser and the tests should run. In case a test fails it will
 skip process the next unit.
 
+It's tested with firefox as well as chrome.
+
 ## Bugs
 
 Please report bugs via the [issue tracker](https://github.com/thsmi/YaUTT/issues) 
