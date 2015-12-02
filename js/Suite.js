@@ -1,36 +1,38 @@
 // Create the namespace...
 
+/* global window */
+
 "use strict";
 
 // Our server is implemented within an anonymous method...
 
-(function() {
+(function(exports) {
 
-  // Create the namespace, even if we are inside an anonymous method...
-  if (!net)
-    var net = {};
-    
-  if (!net.tschmid)
-    net.tschmid = {};
-    
-  if (!net.tschmid.yautt)
-    net.tschmid.yautt = {};  
-  
-  if (!net.tschmid.yautt.test)
-    net.tschmid.yautt.test = {};
-    
-  if (!net.tschmid.yautt.test.server)
-    net.tschmid.yautt.test.server = {};
-  
-  if (!net.tschmid.yautt.test.server.queue)
-    net.tschmid.yautt.test.server.queue = [];
+	/* global $: false */
+	/* global net */
+	/* global tests */
+	/* global document */
 	
-  net.tschmid.yautt.test.server.onMessage = function(event) {	
-
-  	//alert(event.origin);
-    // Do we trust the sender of this message?
- //   if (event.origin !== document.domain)
-//      return;
+  // Create the namespace, even if we are inside an anonymous method...
+  if (!exports.net)
+    exports.net = {};
+    
+  if (!exports.net.tschmid)
+    exports.net.tschmid = {};
+    
+  if (!exports.net.tschmid.yautt)
+    exports.net.tschmid.yautt = {};  
+  
+  if (!exports.net.tschmid.yautt.test)
+    exports.net.tschmid.yautt.test = {};
+    
+  if (!exports.net.tschmid.yautt.test.server)
+    exports.net.tschmid.yautt.test.server = {};
+  
+  if (!exports.net.tschmid.yautt.test.server.queue)
+    exports.net.tschmid.yautt.test.server.queue = [];
+	
+  exports.net.tschmid.yautt.test.server.onMessage = function(event) {	
 
     var msg = JSON.parse(event.data);
   
@@ -44,19 +46,19 @@
     if (msg.type == "FAIL") {
       this.log("##### Test failed: " + msg.data, "Fail");
       // The post event blocks both window. So defere processing...
-      window.setTimeout(function() {that.next()}, 10);      
+      window.setTimeout(function() {that.next();}, 10);      
       return;
     }
     
     if (msg.type == "SUCCEED") {
-      this.log("##### Test succeeded.","Success")
+      this.log("##### Test succeeded.","Success");
       // The post event blocks both window. So defere processing...
-      window.setTimeout(function() {that.next()}, 10);      
+      window.setTimeout(function() {that.next();}, 10);      
       return;
     }    
     
     alert("Unknown post received");
-  }  
+  };
   
   net.tschmid.yautt.test.server.log = function(message, style) {
   	
@@ -69,15 +71,15 @@
       .addClass(style)
       .text(message)
       .appendTo("#divOutput");	
-  }
+  };
 
   net.tschmid.yautt.test.server.logTrace = function(message) {
   	this.log(message, "Trace");
-  }
+  };
   
   net.tschmid.yautt.test.server.logError = function(message) {
   	this.log(message, "Error");
-  }
+  };
   
 
   net.tschmid.yautt.test.server.extend = function (name) {
@@ -101,13 +103,13 @@
     });
     
     return scripts;
-  }
+  };
 
   net.tschmid.yautt.test.server.next = function() {
   	
   	var name = this.queue.shift();
   	
-  	if (typeof(name) == "undefined")
+  	if (typeof(name) === "undefined")
   	  return;
   
     this.log("Starting test profile "+name);    
@@ -133,7 +135,7 @@
           	var msg = {type : "IMPORT", data : script};
           	
           	iframe.postMessage(""+JSON.stringify(msg) ,"*");           
-          })
+          });
         })
         .attr("src","./tests/tests.html"));   
   };
@@ -141,32 +143,89 @@
   net.tschmid.yautt.test.server.run = function() {
   
     var that = this;
-    window.addEventListener("message", function(event) { that.onMessage(event); }, false);
-  
+    
+    this.queue = [];
+    
     $.each(tests, function (name, value) {
-      // Loop throug tests..
-	  if (typeof(value) == "undefined")
-	    return;		 
+      // Loop through tests..
+      if (typeof(value) === "undefined")
+	      return;		 
 
-	  if (!value.script)
-	    return;
+      if (value.disabled)
+	      return;
+	    
+	    if (!value.script)
+	      return;
 	  
-	  that.queue.push(name);
+	    that.queue.push(name);
     });
 	
     this.next();  
     // TODO add a timeout watchdog.
   };
-
+  
+  net.tschmid.yautt.test.server.init = function() {
+    var that = this;
+  	window.addEventListener("message", function(event) { that.onMessage(event); }, false);
+  };
   
   
   $(document).ready(function() {
+  	
+  	net.tschmid.yautt.test.server.init();
   	
     $("#toggleTrace").click(function(){
       $(".logTrace").toggle();
     });
   	
-    net.tschmid.yautt.test.server.run();
+    $("#start").click(function() {
+
+    	$.each(tests, function(name,value) {
+    	  if(value.disabled)
+    	    value.disabled = false;
+    	});
+    	
+    	var items = $("#tests input:checkbox:not(:checked)");    	
+    	items.each(function(idx, elm) { 
+    		var name = $(this).val();
+    		
+    		if (tests[name].script)
+    	    tests[name].disabled = true;
+    	});
+    	
+      net.tschmid.yautt.test.server.run();
+    });
+    
+    $("#tests-none").click(function () {
+      $( "#tests input:checkbox" ).each(function() {
+        $(this).prop("checked", false);
+      });
+    });
+
+    $("#tests-all").click(function () {
+      $( "#tests input:checkbox" ).each(function() {
+        $(this).prop("checked", true);
+      });
+    });
+    
+    $("#result-clear").click(function() {
+    	$("#divOutput").empty();
+    });
+    
+    
+    var elm = $("#tests");
+    
+    $.each(tests, function(name, value) {
+
+    	if (!tests[name].script)
+    	  return;
+    	
+    	elm.append(
+    	  $("<div />")
+    	    .append($("<input />", { type:"checkbox", "checked":"checked" }).val(name))
+    	    .append(name));
+    	    
+    });
   });
 
-}());
+}(window));
